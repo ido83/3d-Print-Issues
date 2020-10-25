@@ -1,0 +1,7 @@
+# Use the command M303 E0 S187 C10 to start the P.I.D. Auto Tuning. 
+The command we just entered will tune our hot-end to 187 degrees and it will do the tuning cycle 10 times. 
+Search in console “PID Autotune finished!” when complete.
+
+# Take the P.I.D values we need to input. To input them into the printer we use the command M301 P20.62 I1.59 D65.70 then M500 to save the PID to EEPROM and then M503 to verify that it is saved.
+
+
