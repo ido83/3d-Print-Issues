@@ -1,0 +1,41 @@
+#CALIBRATING EXTRUDER STEPS/MM
+To calibrate the steps/mm value, we tell the printer to extrude 100mm of plastic. 
+Then we'll measure how much plastic it extruded and see if it actually was 100mm.
+
+#Measuring
+First measure out 120mm of filament from where it enters your extruder and mark it with a pen or marker. This will be the reference point. 
+Connect your computer to your printer and open up a program that allows you to send individual gcode commands to it (like OctoPrint, Pronterface, Simplify 3D, Repetier Host, or Octoprint web interface). 
+Heat up your hotend to your regular printing temperature and ensure that the nozzle is in a position above the bed where it can freely extrude filament.
+Send the command M83. This will ensure that your printer is interpreting the following extrusion commands in relative mode.
+Set the extrusion feedrate to 50mm/minute with the command G1 F50.
+Extrude 100mm of plastic with the command G1 E100.
+
+This will take 120 seconds until it's finished extruding. The reason for extruding so slowly in this step is to ensure that the resistance of the plastic further down in the hotend does not affect how much is fed in by the stepper motor. It also helps to take the temperature out of the equation, again by reducing the effects of pressure in the nozzle.
+Once the machine has finished extruding the 100mm, switch off the hotend heater.
+Measure the distance between the point that you marked before we started, and where the plastic enters the extruder (the same point from which you measured the initial 120mm).
+If this is exactly 20mm, congratulations! Your extruder steps/mm are perfectly calibrated. If it is more or less than 20mm, then it means that your printer is over or under extruding. Fortunately the way to solve this is fairly easy. 
+
+#Tuning
+In order to calculate what is our new steps/mm value will be, we need to know the existing steps/mm value, and the under/over extrusion rate.
+
+To get the existing steps/mm value, send the command M503. This will print out all the current values saved in your printers EEPROM (storage that persists when it is powered off), including all your axis steps/mm values.
+
+We're only interested in the E value, Locate it and record it.
+
+We need to work out how much plastic the printer actually extruded, which can be calculated from: 120 mm - left over filament distance (measured in the previous step). For example, for me this was 120 - 26 = 94.
+So my printer was actually only extruding 94 mm when I asked it to extrude 100 mm - that's a 6% under extrusion! So, to calculate the new, correct extruder steps/mm value, we perform the following calculations.
+
+Desired extruded distance / actual extruded distance = correction multiplier:
+
+100 / 94 = 1.0638
+
+Correction multiplier × original extruder steps/mm = calibrated extruder steps/mm:
+
+1.0638 × 161.3 = 171.6
+
+This is our new calibrated extruder steps/mm value! To enter and save it to your printer use the commands M92 E###.# (replace the hashes with your calibrated extruder steps/mm value) and then M500 to save it.
+
+To make sure that this has all worked out as intended, turn your printer off and on or reset it and then send the command M503 again to check if your new extruder steps/mm value is shown.
+
+To do a final test to make sure it's correctly calibrated, measure out another 120 mm of filament, mark it, and then extrude 100 mm. You should have exactly 20 mm left over. If not, recalibrate using the steps above.
+
